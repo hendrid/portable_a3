@@ -260,13 +260,13 @@
               style="width: 59em; height: 45em; border-radius: 15px"
               onclick="document.getElementById('imageInput').click()"
             >
-              <input
+                <input
                 type="file"
                 id="imageInput"
                 name="image"
                 accept="image/*"
                 capture
-                onchange="loadImage(event)"
+                onclick="captureImage(event)"
                 style="display: none"
               />
               <img
@@ -621,38 +621,91 @@ function getSolution(class_name) {
 }
 
 var imageInputCompressed;
-async function loadImage(event) {
-    const imageFile = event.target.files[0];
-
-    console.log("originalFile instanceof Blob", imageFile instanceof Blob);
-    console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
-    const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 720,
-        useWebWorker: true,
-    };
-    try {
-        const compressedFile = await imageCompression(imageFile, options);
-        imageInputCompressed = compressedFile;
-        console.log(
-            "compressedFile instanceof Blob",
-            compressedFile instanceof Blob
-        );
-        console.log(
-            `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-        );
-        const reader = new FileReader();
-        reader.onload = function () {
-            const previewImage = document.getElementById("previewImage");
-            previewImage.src = reader.result;
-        };
-        reader.readAsDataURL(compressedFile);
-
-        console.log("compressed");
-    } catch (error) {
-        console.log(error);
+async function captureImage(event) {
+  event.preventDefault(); // Prevent the default file selection dialog
+  try {
+    let imagePath = await eel.capture_image()();
+    if (imagePath) {
+      // Simulate a file selection event
+      const file = await fetch(imagePath).then(r => r.blob());
+      await loadImage({ target: { files: [file] } });
+    } else {
+      alert('Failed to capture image');
     }
+  } catch (error) {
+    console.error('Error capturing image:', error);
+    alert('Error capturing image');
+  }
 }
+
+async function loadImage(event) {
+  const imageFile = event.target.files[0];
+  console.log("Original file size:", imageFile.size / 1024 / 1024, "MB");
+
+  const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 720,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(imageFile, options);
+    imageInputCompressed = compressedFile;
+    console.log("Compressed file size:", compressedFile.size / 1024 / 1024, "MB");
+
+    const reader = new FileReader();
+    reader.onload = function () {
+      const previewImage = document.getElementById("previewImage");
+      previewImage.src = reader.result;
+      previewImage.style.display = "block";
+    };
+    reader.readAsDataURL(compressedFile);
+
+    // Store the compressed file for later use if needed
+    window.compressedImageFile = compressedFile;
+  } catch (error) {
+    console.error('Error compressing image:', error);
+    alert('Error compressing image');
+  }
+}
+
+// Ensure the imageCompression function is available
+if (typeof imageCompression === 'undefined') {
+  console.error('imageCompression library is not loaded. Please include the necessary script.');
+}
+
+// async function loadImage(event) {
+//     const imageFile = event.target.files[0];
+
+//     console.log("originalFile instanceof Blob", imageFile instanceof Blob);
+//     console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+//     const options = {
+//         maxSizeMB: 0.5,
+//         maxWidthOrHeight: 720,
+//         useWebWorker: true,
+//     };
+//     try {
+//         const compressedFile = await imageCompression(imageFile, options);
+//         imageInputCompressed = compressedFile;
+//         console.log(
+//             "compressedFile instanceof Blob",
+//             compressedFile instanceof Blob
+//         );
+//         console.log(
+//             `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+//         );
+//         const reader = new FileReader();
+//         reader.onload = function () {
+//             const previewImage = document.getElementById("previewImage");
+//             previewImage.src = reader.result;
+//         };
+//         reader.readAsDataURL(compressedFile);
+
+//         console.log("compressed");
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 
 const hamaPadi = {
   "Belalang": "Serangga pemakan daun padi yang dapat menyebabkan kerusakan signifikan pada tanaman",
