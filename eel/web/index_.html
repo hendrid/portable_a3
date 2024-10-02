@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing App</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        select, button {
+            margin: 10px 0;
+            padding: 5px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Processing App</h1>
+    <select id="imageSelect">
+        <option value="">Select an image</option>
+    </select>
+    <button onclick="processImage()">Process Image</button>
+    <div id="result"></div>
+
+    <script>
+        async function loadImages() {
+            const images = await eel.list_images()();
+            const select = document.getElementById('imageSelect');
+            images.forEach(image => {
+                const option = document.createElement('option');
+                option.value = image;
+                option.textContent = image;
+                select.appendChild(option);
+            });
+        }
+
+        async function processImage() {
+            const select = document.getElementById('imageSelect');
+            const result = document.getElementById('result');
+            
+            if (select.value) {
+                result.textContent = 'Processing...';
+                const response = await eel.process_image(select.value)();
+                result.textContent = response;
+            } else {
+                result.textContent = 'Please select an image first.';
+            }
+        }
+
+        loadImages();
+    </script>
+</body>
+</html>

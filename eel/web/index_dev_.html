@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FADMAKA</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      data-n-head="ssr"
+      rel="icon"
+      data-hid="favicon-32"
+      type="image/png"
+      size="32"
+      href="https://img.icons8.com/color/480w/farmer-female.png"
+    />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/gallery.css" />
+    <style>
+        body {
+          font-family: Poppins !important;
+          background: #f3f8fa !important;
+        }
+        img[src*="000webhost"] {
+          display: none;
+        }
+  
+        .rectangle {
+          width: 42em;
+          height: 42em;
+          /* border: 2px solid #333; */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          transition: border-color 0.3s;
+          position: relative;
+        }
+  
+        .rectangle:hover {
+          border-color: #666;
+        }
+  
+        .rectangle input[type="file"] {
+          display: none;
+        }
+  
+        .rectangle img {
+          max-width: 100%;
+          max-height: 100%;
+        }
+  
+        .rectangle:hover::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+  
+        .scan-animation {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.75) 75%,
+            transparent
+          );
+          animation: scan 1.5s linear infinite;
+          pointer-events: none;
+          display: none; /* Initially hidden */
+        }
+  
+        @keyframes scan {
+          0% {
+            top: -100%;
+          }
+          100% {
+            top: 25%;
+          }
+        }
+  
+        .image-container {
+          height: 21em;
+          background-size: cover;
+          background-position: center;
+        }
+  
+        .rectangle input[type="file"] {
+          /* Existing styles */
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          cursor: pointer;
+        }
+        .btn-primary {
+          /* Existing styles */
+          font-size: 36px;
+          padding: 35px 75px;
+          align-self: center;
+        }
+  
+        .btn-primary:focus {
+          /* Existing styles */
+          outline: none;
+        }
+  
+        .align-items-center {
+          /* New styles to center the button vertically */
+          align-items: center;
+        }
+  
+        .tooltip {
+          font-size: 1.5em;
+        }
+        /* Define a color scheme */
+        :root {
+          --primary-color: #0e0e14;
+          --secondary-color: #8d99ae;
+          --accent-color: #108132;
+        }
+  
+        /* Style the link element */
+        .map-link {
+          width: 14rem;
+          height: 4rem;
+          display: flex;
+          align-items: center;
+          margin: 1rem;
+          padding: 0.5rem;
+          color: var(--primary-color);
+          background-color: var(--secondary-color);
+          text-decoration: none !important;
+          font-family: "Roboto", sans-serif;
+          font-weight: bold;
+          font-size: 1.5rem;
+        }
+  
+        /* Style the icon element */
+        .map-link i {
+          font-size: 3rem;
+          margin-right: 0.5rem;
+        }
+  
+        /* Add a hover effect */
+        .map-link:hover {
+          color: white;
+          background-color: var(--accent-color);
+          transform: scale(1.1);
+          box-shadow: 0 0 10px var(--accent-color);
+        }
+  
+        /* Add a transition */
+        .map-link {
+          transition: all 0.3s ease-in-out;
+        }
+      </style>
+      <style>
+        /* style.css */
+  
+        /* Custom font */
+        @import url("https://fonts.googleapis.com/css?family=Roboto");
+  
+        /* Body style */
+        body {
+          font-family: "Roboto", sans-serif;
+          background-color: white;
+        }
+  
+        /* Card style */
+        .card {
+          margin: 10px;
+          border: none;
+        }
+  
+        /* Card image style */
+        .card-img-top {
+          height: 200px;
+          object-fit: cover;
+        }
+  
+        /* Card text style */
+        .card-text {
+          font-size: 18px;
+          color: green;
+        }
+      </style>
+      <style>
+        .container_scroll {
+          margin: 5px;
+          width: 100%;
+          height: 19vh;
+          white-space: nowrap;
+        }
+  
+        /* Flex */
+        .flex {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow: auto;
+        }
+        .flex-item {
+          flex: 0 0 auto;
+        }
+  
+        #quickGallery .galleryImage {
+          height: 350px;
+        }
+        #quickGallery {
+          margin: 15px;
+          overflow: scroll;
+        }
+      </style>
+  </head>
+  <body>
+    <div class="container-fluid mt-5">
+        <h1
+          style="
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-align: left;
+            font-size: 7.6em !important;
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+            letter-spacing: 0.4rem;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black,
+              -1px -1px black, 1px 1px black, -1px 1px black, 1px -1px black;
+            z-index: 10000;
+            position: relative;
+          "
+        >
+          PiFS
+        </h1>
+        <h2
+          class="mb-3 font-weight-bold"
+          style="z-index: 10000; position: relative"
+        >
+          Masukkan foto daun di bawah ini:
+        </h2>
+        <form id="identifyForm" class="d-flex flex-column align-items-center">
+            <div
+              class="rectangle mb-4"
+              style="width: 59em; height: 45em; border-radius: 15px"
+              onclick="document.getElementById('imageInput').click()"
+            >
+              <input
+                type="file"
+                id="imageInput"
+                name="image"
+                accept="image/*"
+                capture
+                onchange="loadImage(event)"
+                style="display: none"
+              />
+              <img
+                id="previewImage"
+                src="https://png.pngtree.com/png-vector/20191129/ourmid/pngtree-image-upload-icon-photo-upload-icon-png-image_2047546.jpg"
+                alt="Preview"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  border-radius: 15px;
+                "
+              />
+              <div id="scanAnimation" class="scan-animation"></div>
+            </div>
+            <div class="d-flex justify-content-center" style="z-index: 10000">
+              <button
+                type="submit"
+                class="btn btn-primary mx-3"
+                style="
+                  background-color: #150999;
+                  border: none;
+                  color: white;
+                  padding: 25px 100px;
+                  text-align: center;
+                  text-decoration: none;
+                  font-size: 35px;
+                  font-weight: bold;
+                  border-radius: 10px;
+                "
+              >
+                Identifikasi
+              </button>
+              <button
+                class="btn btn-primary mx-3"
+                onclick="window.location.href='https://fadmaka.000webhostapp.com/migrasi/maps_new.html'"
+                style="
+                  background-color: #4caf50;
+                  border: none;
+                  color: white;
+                  padding: 25px 100px;
+                  text-align: center;
+                  text-decoration: none;
+                  font-size: 35px;
+                  font-weight: bold;
+                  border-radius: 10px;
+                "
+              >
+                <i class="fas fa-map"></i> Peta Dunia 5D
+              </button>
+            </div>
+          </form>
+      </div>
+      <div class="container-fluid">
+        <div class="row mt-5">
+          <div class="col-12">
+            <h1
+              class="text-center mb-2"
+              style="font-size: 50px; color: #148230; font-weight: bold"
+              id="hasil_identifikasi"
+            ></h1>
+            <h3
+              class="text-center mb-4"
+              style="font-size: 32px; color: #555"
+              id="deskripsi_identifikasi"
+            ></h3>
+          </div>
+        </div>
+      </div>
+      <div class="slideInLeft" style="width: 100%">
+        <div class="container_scroll flex" id="quickGallery"></div>
+      </div>
+      <div id="imagePreview" class="quickModal" style="z-index: 999999999">
+        <div id="modalContent" style="max-width: 900px" class="p-3">
+          <span class="closeBtn"
+            ><i class="fa fa-times" aria-hidden="true"></i
+          ></span>
+          <img src="#" alt="" /><br />
+          <h1
+            style="
+              color: #008cba;
+              margin-bottom: 20px;
+              font-weight: bold;
+              text-align: center;
+              text-transform: uppercase;
+            "
+            id="hpt"
+          ></h1>
+          <h1 style="margin-bottom: 10px; font-weight: bold">Deskripsi:</h1>
+          <h2
+            style="margin-bottom: 10px; text-align: justify"
+            id="deskripsi"
+          ></h2>
+          <br />
+          <h1 style="margin-bottom: 10px; font-weight: bold">Agens:</h1>
+          <h2 style="margin-bottom: 10px; text-align: justify" id="agens"></h2>
+          <br />
+          <h1 style="margin-bottom: 10px; font-weight: bold">Pembiakan:</h1>
+          <h2 style="margin-bottom: 10px; text-align: justify">
+            Video Tutorial:
+            <a
+              href="https://www.youtube.com/dummylink"
+              style="color: #008cba; text-decoration: underline"
+              >Lihat Tutorial YouTube</a
+            >
+          </h2>
+          <div
+            style="margin-bottom: 10px; text-align: justify"
+            id="pembiakan"
+          ></div>
+          <h1 style="margin-bottom: 10px; text-align: justify">
+            Informasi lebih lanjut:
+            <a
+              href="https://www.wa.me/6289677030198"
+              style="color: #008cba; text-decoration: underline"
+              >Hubungi Dinas Pertanian</a
+            >
+          </h1>
+        </div>
+      </div>
+
+    <script src="/eel.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+function startScanAnimation() {
+  const scanAnimation = document.getElementById("scanAnimation");
+  scanAnimation.style.display = "block";
+}
+
+function stopScanAnimation() {
+  const scanAnimation = document.getElementById("scanAnimation");
+  scanAnimation.style.display = "none";
+}
+
+function getClassName(index) {
+  if (index >= 0 && index <= 1457) {
+    return ["Bacterial Leaf Blight", "bacterial_leaf_blight"];
+  } else if (index >= 1458 && index <= 2919) {
+    return ["Brown Plant Hopper", "brown_planthopper"];
+  } else if (index >= 2920 && index <= 4705) {
+    return ["Rice Leafhopper", "rice_leafhopper"];
+  } else if (index >= 4706 && index <= 7890) {
+    return ["Rice Blast", "rice_blast"];
+  } else if (index >= 7891 && index <= 9507) {
+    return ["Brown Spot", "brown_spot"];
+  } else if (index >= 9508 && index <= 11073) {
+    return ["Yellow Rice Borer", "yellow_rice_borer"];
+  } else {
+    return "Unknown Class";
+  }
+}
+
+var solution = {
+        bacterial_leaf_blight: {
+          HPT: "Bacterial Leaf Blight",
+          Deskripsi:
+            "Hawar Daun Bakteri (HDB) adalah penyakit tanaman padi yang disebabkan oleh bakteri Xanthomonas oryzae pv. oryzae (Xoo). Penyakit ini dapat merusak pertanaman padi pada semua fase pertumbuhan, mulai dari persemaian hingga menjelang panen. HDB menyebabkan kerusakan pada daun padi, mengurangi kemampuan tanaman dalam melakukan fotosintesis, dan secara signifikan mengurangi produktivitas lahan, terutama pada musim hujan.",
+          Agens: {
+            Nama: "Trichoderma sp.",
+            Deskripsi:
+              "Trichoderma sp. adalah jenis cendawan yang dapat digunakan sebagai agens hayati untuk meningkatkan ketahanan tanaman padi terhadap penyakit HDB. Trichoderma sp. dapat tumbuh optimal pada suhu antara 6°C hingga 41°C dengan pH optimum 3 hingga 7. Cendawan ini berkembangbiak melalui konidia (spora) dan dapat dibiakkan secara buatan. Aplikasi Trichoderma sp. pada tanaman padi membantu melawan penyakit HDB dan meningkatkan ketahanan tanaman, mengurangi ketergantungan pada pestisida kimia, serta memperbaiki kualitas dan produktivitas hasil pertanian.",
+          },
+          Pembiakan: `<h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Agens Hayati:</h1>
+              <h2>Trichoderma sp. adalah jenis cendawan yang dapat digunakan sebagai agens hayati untuk meningkatkan ketahanan tanaman padi terhadap penyakit HDB. Trichoderma sp. dapat tumbuh optimal pada suhu antara 6°C hingga 41°C dengan pH optimum 3 hingga 7. Cendawan ini berkembangbiak melalui konidia (spora) dan dapat dibiakkan secara buatan. Proses pembiakan Trichoderma sp. melibatkan dua tahap utama: tahap starter dan tahap pembiakan pada media tanah (kompos).</h2>
+              <br><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakkan Trichoderma sp.:</h1>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+              <h2>1. Campurkan 30 kg beras dan 1,5 kg sekam padi, kukus selama 1,5 jam hingga beras lengket. </h2>
+              <h2>2. Masukkan campuran beras dan sekam padi ke dalam kantong plastik ukuran 1 kg, kukus kembali selama 1 jam. </h2>
+              <h2>3. Dinginkan dan biarkan selama 12 jam dalam ruangan steril. </h2>
+              <h2>4. Tambahkan ¼ petri biang Trichoderma sp. ke dalam kantong plastik, campur rata, ikat rapat, dan simpan di tempat bersih tanpa sinar matahari. </h2>
+              <h2>Trichoderma sp. akan tumbuh dalam satu hingga dua minggu.</h2><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Kompos:</h1>
+              <h2>1. Campurkan 6 m³ kompos dengan 3 m³ kotoran sapi. </h2>
+              <h2>2. Siram campuran dengan satu botol EM-4, 5 kg gula merah yang dilarutkan dalam 100 liter air. </h2>
+              <h2>3. Tutup dengan terpal selama 2-4 hari hingga bau kotoran sapi hilang. </h2>
+              <h2>4. Campurkan 25 kg starter beras pada 1 m³ media kompos, aduk rata, dan tutup dengan terpal. </h2>
+              <h2>Setelah satu bulan, Trichoderma sp. akan tumbuh dengan benang-benang halus berwarna putih pada permukaan media kompos. </h2><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Cara Aplikasi Pupuk Biologis dan Biofungisida Trichoderma sp. pada Tanaman Padi:</h1>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Pada Pembibitan:</h1>
+              <h2>1. Taburkan Trichoderma sp. di antara barisan tanaman padi yang berusia 3-6 bulan, tutup dengan tanah. </h2>
+              <h2>2. Dosis: 600 kg per hektar. </h2><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Pada Bibit Karet Polibag:</h1>
+              <h2>Taburkan 25 gram Trichoderma sp. dari pangkal bibit, tutup dengan tanah setebal 1-2 cm. </h2><br>
+              `,
+        },
+        brown_planthopper: {
+          HPT: "Brown Planthopper",
+          Deskripsi:
+            "Wereng Coklat (Nilaparvata lugens) adalah spesies wereng yang menyerang tanaman padi (Oryza sativa L.). Populasi yang tinggi dapat menyebabkan daun pertama kali berubah menjadi oranye-kuning, kemudian menjadi coklat dan kering (hopper burn), dan akhirnya, tanaman mengering dan mati.",
+          Agens: {
+            Nama: "Beauveria Bassiana",
+            Deskripsi:
+              "Beauveria Bassiana adalah jamur yang ditemukan secara alami di tanah di seluruh dunia dan bertindak sebagai parasit pada berbagai spesies artropoda, menyebabkan penyakit muscardine putih. Jamur ini termasuk dalam kelompok jamur entomopatogenik. Beauveria Bassiana digunakan sebagai insektisida biologis untuk mengendalikan sejumlah hama, termasuk rayap, trips, whiteflies, kutu daun, dan berbagai jenis kumbang.",
+          },
+          Pembiakan: `
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Beauveria Bassiana:</h1>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+            <h2>1. Kultur Beauveria Bassiana pada media Sabouraud Dextrose Agar (SDA) dan inkubasi pada suhu 25-30°C selama 7-10 hari.</h2>
+            <h2>2. Setelah pertumbuhan jamur mencapai fase konidia (spora), panen konidia dengan cara mengikis permukaan kultur menggunakan spatula steril.</h2>
+            <h2>3. Saring konidia menggunakan kain kasa steril untuk memisahkan konidia dari media.</h2>
+            <h2>4. Konidia yang telah dipanen dapat disimpan dalam botol steril pada suhu 4°C untuk digunakan sebagai inokulum pada tahap berikutnya.</h2>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Tanah (Kompos):</h1>
+            <h2>1. Campurkan kompos dengan air hingga kelembaban mencapai 60-70%.</h2>
+            <h2>2. Tambahkan inokulum Beauveria Bassiana ke dalam kompos dan aduk rata.</h2>
+            <h2>3. Tutup kompos dengan plastik atau terpal dan biarkan selama 15-20 hari pada suhu ruangan.</h2>
+            <h2>4. Setelah itu, Beauveria Bassiana akan tumbuh dengan benang-benang halus berwarna putih pada permukaan media kompos.</h2>
+            <br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Aplikasi Beauveria Bassiana pada Tanaman:</h1>
+            <h2>1. Beauveria Bassiana dapat diaplikasikan ke tanaman target dalam bentuk suspensi konidia.</h1>
+            <h2>2. Suspensi konidia dapat disemprotkan langsung ke tanaman atau tanah di sekitar tanaman.</h1>
+            <h2>3. Dosis aplikasi dapat bervariasi tergantung pada jenis tanaman dan tingkat infestasi hama.</h1><br>`,
+        },
+        rice_leafhopper: {
+          HPT: "Rice Leafhopper",
+          Deskripsi:
+            "Wereng Hijau (Nephotettix malayanus dan Nephotettix virescens) adalah hama paling umum di sawah padi dan sangat penting karena mereka menyebar penyakit virus tungro. Baik nimfa maupun dewasa, mereka memakan tanaman dengan menghisap getah tanaman menggunakan mulut berbentuk jarum.",
+          Agens: {
+            Nama: "Beauveria Bassiana",
+            Deskripsi:
+              "Beauveria Bassiana adalah jamur yang ditemukan secara alami di tanah di seluruh dunia dan bertindak sebagai parasit pada berbagai spesies artropoda, menyebabkan penyakit muscardine putih. Jamur ini termasuk dalam kelompok jamur entomopatogenik. Beauveria Bassiana digunakan sebagai insektisida biologis untuk mengendalikan sejumlah hama, termasuk rayap, trips, whiteflies, kutu daun, dan berbagai jenis kumbang.",
+          },
+          Pembiakan: `
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Beauveria Bassiana:</h1>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+            <h2>1. Kultur Beauveria Bassiana pada media Sabouraud Dextrose Agar (SDA) dan inkubasi pada suhu 25-30°C selama 7-10 hari.</h2>
+            <h2>2. Setelah pertumbuhan jamur mencapai fase konidia (spora), panen konidia dengan cara mengikis permukaan kultur menggunakan spatula steril.</h2>
+            <h2>3. Saring konidia menggunakan kain kasa steril untuk memisahkan konidia dari media.</h2>
+            <h2>4. Konidia yang telah dipanen dapat disimpan dalam botol steril pada suhu 4°C untuk digunakan sebagai inokulum pada tahap berikutnya.</h2><br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Tanah (Kompos):</h1>
+            <h2>1. Campurkan kompos dengan air hingga kelembaban mencapai 60-70%.</h2>
+            <h2>2. Tambahkan inokulum Beauveria Bassiana ke dalam kompos dan aduk rata.</h2>
+            <h2>3. Tutup kompos dengan plastik atau terpal dan biarkan selama 15-20 hari pada suhu ruangan.</h2>
+            <h2>4. Setelah itu, Beauveria Bassiana akan tumbuh dengan benang-benang halus berwarna putih pada permukaan media kompos.</h2>
+            <br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Aplikasi Beauveria Bassiana pada Tanaman:</h1>
+            <h2>1. Beauveria Bassiana dapat diaplikasikan ke tanaman target dalam bentuk suspensi konidia.</h1>
+            <h2>2. Suspensi konidia dapat disemprotkan langsung ke tanaman atau tanah di sekitar tanaman.</h1>
+            <h2>3. Dosis aplikasi dapat bervariasi tergantung pada jenis tanaman dan tingkat infestasi hama.</h1><br>`,
+        },
+        rice_blast: {
+          HPT: "Rice Blast",
+          Deskripsi:
+            "Blast Padi, disebabkan oleh jamur Magnaporthe oryzae, dapat mempengaruhi semua bagian tanaman padi yang berada di atas tanah: daun, kerah, simpul, leher, bagian malai, dan kadang-kadang selubung daun. Kerusakan yang paling terlihat adalah banyaknya bercak besar pada daun yang dapat membunuh seluruh daun.",
+          Agens: {
+            Nama: "Paenibacillus polymyxa",
+            Deskripsi:
+              "Paenibacillus polymyxa, juga dikenal sebagai Bacillus polymyxa, adalah bakteri Gram-positif yang mampu memperbaiki nitrogen. Bakteri ini ditemukan di tanah, jaringan tanaman, sedimen laut, dan mata air panas. Bakteri ini mungkin memiliki peran dalam ekosistem hutan dan aplikasi masa depan potensial sebagai biofertilizer dan agen biocontrol dalam pertanian.",
+          },
+          Pembiakan: `<h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Agens Hayati:</h1>
+            <h2>Paenibacillus polymyxa, juga dikenal sebagai Bacillus polymyxa, adalah bakteri Gram-positif yang mampu memperbaiki nitrogen. Bakteri ini ditemukan di tanah, jaringan tanaman, sedimen laut, dan mata air panas. Bakteri ini mungkin memiliki peran dalam ekosistem hutan dan aplikasi masa depan potensial sebagai biofertilizer dan agen biocontrol dalam pertanian.</h2>
+            <br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Paenibacillus polymyxa:</h1>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+            <h2>1. Kultur Paenibacillus polymyxa pada media Sabouraud Dextrose Agar (SDA) dan inkubasi pada suhu 25-30°C selama 7-10 hari.</h2>
+            <h2>2. Setelah pertumbuhan bakteri mencapai fase konidia (spora), panen konidia dengan cara mengikis permukaan kultur menggunakan spatula steril.</h2>
+            <h2>3. Saring konidia menggunakan kain kasa steril untuk memisahkan konidia dari media.</h2>
+            <h2>4. Konidia yang telah dipanen dapat disimpan dalam botol steril pada suhu 4°C untuk digunakan sebagai inokulum pada tahap berikutnya.</h2><br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Tanah (Kompos):</h1>
+            <h2>1. Campurkan kompos dengan air hingga kelembaban mencapai 60-70%.</h2>
+            <h2>2. Tambahkan inokulum Paenibacillus polymyxa ke dalam kompos dan aduk rata.</h2>
+            <h2>3. Tutup kompos dengan plastik atau terpal dan biarkan selama 15-20 hari pada suhu ruangan.</h2>
+            <h2>4. Setelah itu, Paenibacillus polymyxa akan tumbuh dengan benang-benang halus berwarna putih pada permukaan media kompos.</h2>
+            <br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Cara Aplikasi Paenibacillus polymyxa pada Tanaman:</h1>
+            <h2>1. Paenibacillus polymyxa dapat diaplikasikan ke tanaman target dalam bentuk suspensi konidia.</h2>
+            <h2>2. Suspensi konidia dapat disemprotkan langsung ke tanaman atau tanah di sekitar tanaman.</h2>
+            <h2>3. Dosis aplikasi dapat bervariasi tergantung pada jenis tanaman dan tingkat infestasi hama.</h2><br>`,
+        },
+        brown_spot: {
+          HPT: "Brown Spot",
+          Deskripsi:
+            "Bercak Coklat adalah penyakit jamur yang menginfeksi coleoptile, daun, selubung daun, cabang malai, glume, dan spikelet. Kerusakan yang paling terlihat adalah banyaknya bercak besar pada daun yang dapat membunuh seluruh daun.",
+          Agens: {
+            Nama: "Trichoderma viride",
+            Deskripsi:
+              "Trichoderma viride adalah jenis cendawan yang dapat digunakan sebagai agens hayati untuk mengendalikan berbagai penyakit tanaman, termasuk Brown Spot. Trichoderma viride dapat tumbuh optimal pada suhu antara 6°C hingga 41°C dengan pH optimum 3 hingga 7. Cendawan ini berkembangbiak melalui konidia (spora) dan dapat dibiakkan secara buatan. Aplikasi Trichoderma viride pada tanaman padi membantu melawan penyakit Brown Spot dan meningkatkan ketahanan tanaman, mengurangi ketergantungan pada pestisida kimia, serta memperbaiki kualitas dan produktivitas hasil pertanian.",
+          },
+          Pembiakan: `<h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Agens Hayati:</h1>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+            <h2>1. Campurkan 30 kg beras dan 1,5 kg sekam padi, kukus selama 1,5 jam hingga beras lengket.</h2>
+            <h2>2. Masukkan campuran beras dan sekam padi ke dalam kantong plastik ukuran 1 kg, kukus kembali selama 1 jam.</h2>
+            <h2>3. Dinginkan dan biarkan selama 12 jam dalam ruangan steril.</h2>
+            <h2>4. Tambahkan ¼ petri biang Trichoderma viride ke dalam kantong plastik, campur rata, ikat rapat, dan simpan di tempat bersih tanpa sinar matahari.</h2>
+            <h2>5. Trichoderma viride akan tumbuh dalam satu hingga dua minggu.</h2>
+            <br><br>
+            <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Kompos:</h1>
+            <h2>1. Campurkan 6 m³ kompos dengan 3 m³ kotoran sapi.</h2>
+            <h2>2. Siram campuran dengan satu botol EM-4, 5 kg gula merah yang dilarutkan dalam 100 liter air.</h2>
+            <h2>3. Tutup dengan terpal selama 2-4 hari hingga bau kotoran sapi hilang.</h2>
+            <h2>4. Campurkan 25 kg starter beras pada 1 m³ media kompos, aduk rata, dan tutup dengan terpal.</h2>
+            <h2>5. Setelah satu bulan, Trichoderma viride akan tumbuh dengan benang-benang halus berwarna putih pada permukaan media kompos.</h2>
+            <br><br>`,
+        },
+        yellow_rice_borer: {
+          HPT: "Yellow Rice Borer",
+          Deskripsi:
+            "Yellow Rice Borer atau Wereng Batang Kuning (Scirpophaga incertulas) adalah spesies ngengat dari keluarga Crambidae. Larva yang sudah tumbuh penuh berwarna kuning pucat hingga hijau kekuningan dengan kepala coklat dan mencapai panjang 20 mm. Pupa terbentuk dalam kepompong sutra putih. Mereka mengebor batang tanaman padi. Kerusakan yang paling terlihat adalah banyaknya bercak besar pada daun yang dapat membunuh seluruh daun.",
+          Agens: {
+            Nama: "Telenomus rowani",
+            Deskripsi:
+              "Telenomus rowani adalah parasitoid telur yang digunakan untuk mengendalikan hama Yellow Rice Borer. Parasitoid ini meletakkan telurnya di dalam telur hama, dan larva parasitoid yang menetas akan memakan isi telur hama, sehingga mencegah perkembangan hama. Penggunaan parasitoid ini sebagai agens hayati dapat membantu mengurangi populasi Yellow Rice Borer di lahan pertanian.",
+          },
+          Pembiakan: `<h1 style="margin-bottom: 10px; font-weight: bold">Cara Pembiakan Agens Hayati:</h1>
+              <h2>Telenomus rowani adalah parasitoid telur yang digunakan untuk mengendalikan hama Yellow Rice Borer. Parasitoid ini meletakkan telurnya di dalam telur hama, dan larva parasitoid yang menetas akan memakan isi telur hama, sehingga mencegah perkembangan hama. Penggunaan parasitoid ini sebagai agens hayati dapat membantu mengurangi populasi Yellow Rice Borer di lahan pertanian.</h2>
+              <br><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Starter:</h1>
+              <h2>1. Siapkan kandang plastik berukuran 30 x 30 x 30 cm dengan lubang ventilasi yang ditutup kain kasa.</h2>
+              <h2>2. Masukkan tanaman padi berumur 30-40 hari yang telah diserang oleh Yellow Rice Borer ke dalam kandang.</h2>
+              <h2>3. Lepaskan imago Telenomus rowani yang telah dikumpulkan dari alam atau hasil pembiakan sebelumnya ke dalam kandang.</h2>
+              <h2>4. Biarkan imago Telenomus rowani menetas dan memarasit telur-telur Yellow Rice Borer selama 7-10 hari.</h2>
+              <h2>5. Panen tanaman padi yang mengandung telur-telur Yellow Rice Borer yang telah diparasit oleh Telenomus rowani.</h2>
+              <h2>6. Simpan tanaman padi di tempat sejuk dan lembab hingga telur-telur Telenomus rowani menetas.</h2>
+              <br><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Tahap Pembiakan pada Media Tanaman Padi:</h1>
+              <h2>1. Siapkan lahan pertanian padi dengan sistem irigasi permanen.</h2>
+              <h2>2. Tanam bibit padi berumur 15-20 hari dengan jarak tanam 20 x 20 cm.</h2>
+              <h2>3. Siram lahan dengan air setinggi 5 cm dan biarkan selama satu minggu.</h2>
+              <h2>4. Lepaskan Telenomus rowani dewasa ke lahan pertanian padi dan biarkan mereka memarasit telur-telur Yellow Rice Borer selama satu minggu.</h2>
+              <h2>5. Panen tanaman padi yang mengandung telur-telur Yellow Rice Borer yang telah diparasit oleh Telenomus rowani.</h2>
+              <h2>6. Simpan tanaman padi di tempat sejuk dan lembab hingga telur-telur Telenomus rowani menetas.</h2>
+              <br><br>
+              <h1 style="margin-bottom: 10px; font-weight: bold">Cara Aplikasi Telenomus rowani pada Tanaman:</h1>
+              <h2>1. Telenomus rowani dapat diaplikasikan ke tanaman target dengan melepaskan imago dewasa secara langsung ke lahan pertanian.</h2>
+              <h2>2. Pastikan keberadaan telur-telur Yellow Rice Borer di lahan pertanian sebelum aplikasi.</h2>
+              <h2>3. Monitor populasi Telenomus rowani untuk memastikan efektivitas pengendalian hama.</h2><br>`,
+        },
+      };
+
+function getSolution(class_name) {
+  console.log(class_name);
+  $("#modalContent #hpt").text(solution[class_name].HPT);
+  $("#modalContent #deskripsi").text(solution[class_name].Deskripsi);
+  $("#modalContent #agens").text(
+    solution[class_name].Agens.Nama +
+    " - " +
+    solution[class_name].Agens.Deskripsi
+  );
+  $("#modalContent #pembiakan").html(solution[class_name].Pembiakan);
+}
+
+var imageInputCompressed;
+async function loadImage(event) {
+    const imageFile = event.target.files[0];
+
+    console.log("originalFile instanceof Blob", imageFile instanceof Blob);
+    console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+    const options = {
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 720,
+        useWebWorker: true,
+    };
+    try {
+        const compressedFile = await imageCompression(imageFile, options);
+        imageInputCompressed = compressedFile;
+        console.log(
+            "compressedFile instanceof Blob",
+            compressedFile instanceof Blob
+        );
+        console.log(
+            `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+        );
+        const reader = new FileReader();
+        reader.onload = function () {
+            const previewImage = document.getElementById("previewImage");
+            previewImage.src = reader.result;
+        };
+        reader.readAsDataURL(compressedFile);
+
+        console.log("compressed");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const hamaPadi = {
+  "Belalang": "Serangga pemakan daun padi yang dapat menyebabkan kerusakan signifikan pada tanaman",
+  "Bercak Cokelat": "Penyakit jamur yang menyebabkan bercak cokelat pada daun padi, mengurangi fotosintesis",
+  "Keong": "Moluska yang memakan bibit padi muda, terutama di sawah yang baru ditanami",
+  "Kresek": "Penyakit bakteri yang menyebabkan daun padi mengering dan mati, mirip terbakar",
+  "Penggerek Batang": "Larva ngengat yang merusak batang padi dari dalam, menyebabkan malai hampa",
+  "Penggulung": "Larva ngengat yang menggulung daun padi dan memakannya, mengurangi luas daun",
+  "Predator": "Organisme yang memangsa hama padi lain, bisa bermanfaat untuk pengendalian alami",
+  "Ulat": "Larva dari berbagai jenis serangga yang memakan daun padi",
+  "Walang Sangit": "Serangga penghisap bulir padi yang menyebabkan bulir menjadi hampa atau kempis",
+  "Wereng": "Serangga kecil penghisap cairan tanaman yang dapat menyebabkan padi kering dan mati"
+}
+
+async function predictImage() {
+    try {
+        const reader = new FileReader();
+        reader.readAsDataURL(imageInputCompressed);
+        const base64String = await new Promise(resolve => {
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+        });
+        
+        const [filePath, text_jumlah, arr_hpt] = await eel.process_image(base64String)();
+        console.log(arr_hpt)
+        
+        // Set the value of hasil_identifikasi
+        $('#hasil_identifikasi').text(text_jumlah);
+
+        var final_value = '';
+
+        arr_hpt.forEach(function(element) {
+            final_value += hamaPadi[element];
+        });
+
+        $('#deskripsi_identifikasi').text(final_value);
+        return filePath;
+    } catch (error) {
+        console.error("Error in Eel prediction:", error);
+        throw error;
+    }
+}
+
+$(document).ready(function () {
+    $("#myModal").modal("show");
+    document
+        .getElementById("identifyForm")
+        .addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            try {
+                startScanAnimation();
+                const data = await predictImage();
+                console.log(data);
+                if (data) {
+                    const imagePath = data;
+                    const previewImage = document.getElementById("previewImage");
+                    const trimmedImagePath = imagePath.includes('/images/') ? imagePath.split('/images/')[1] : imagePath;
+                    previewImage.src = "images/" + trimmedImagePath;
+                }
+                stopScanAnimation();
+            } catch (error) {
+                console.error("Error:", error);
+                stopScanAnimation();
+            }
+        });
+
+    let modal = $("#imagePreview");
+
+    $("#quickGallery").on("click", ".openBtn", function () {
+        let imgSrc = $(this).attr("data-src");
+        let imgAlt = $(this).find("img").attr("alt");
+
+        $("#modalContent img").attr("src", imgSrc);
+        $("#modalContent img").attr("alt", imgAlt);
+        $("#modalContent img").css("border-radius", "10px");
+
+        getSolution(`${imgAlt}`);
+
+        $("#modalContent").addClass("zoomIn");
+        modal.show();
+    });
+
+    let closeBtn = $("#imagePreview .closeBtn");
+
+    function closeModal() {
+        $("#modalContent").removeClass("zoomIn");
+        $("#modalContent").addClass("zoomOut");
+
+        setTimeout(function () {
+            modal.hide();
+        }, 200);
+    }
+
+    closeBtn.click(function () {
+        closeModal();
+    });
+
+    $(window).click(function (event) {
+        if (event.target.className == "quickModal") {
+            closeModal();
+        }
+    });
+});
+    </script>
+  </body>
+</html>

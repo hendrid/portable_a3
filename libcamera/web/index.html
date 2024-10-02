@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Capture</title>
+    <script type="text/javascript" src="/eel.js"></script>
+    <script>
+        async function captureImage() {
+            let imagePath = await eel.capture_image()();
+            if (imagePath) {
+                document.getElementById('capturedImage').src = imagePath;
+            } else {
+                alert('Failed to capture image');
+            }
+        }
+    </script>
+</head>
+<body>
+    <button onclick="captureImage()">Capture Image</button>
+    <img id="capturedImage" src="" alt="Captured Image" style="max-width: 100%;">
+</body>
+</html>
