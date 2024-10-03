@@ -6,24 +6,15 @@ import struct
 import time
 from collections import Counter
 import ast
-import subprocess
 
 # Configuration
 DIRECTORY = '/Users/hendri/Documents/PROJECTS/portable_a3/eel/web/images'
-# SERVER_IP = '192.168.100.212'
-SERVER_IP = '10.252.133.225'
+SERVER_IP = '192.168.100.221'
+# SERVER_IP = '10.252.133.225'
 SERVER_PORT = 12345
 BUFFER_SIZE = 4096
 
 @eel.expose
-def capture_image():
-    try:
-        # Use libcamera-still to capture an image
-        subprocess.run(['libcamera-still', '-o', 'captured_image.jpg'], check=True)
-        return 'captured_image.jpg'
-    except subprocess.CalledProcessError:
-        return None
-    
 def process_image(base64String):
     file_bytes = base64.b64decode(base64String.split(',')[1])
     file_name = f"{int(time.time())}.jpg"
